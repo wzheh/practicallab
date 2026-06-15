@@ -1,0 +1,168 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+void main() {
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const ShapeLabApp(),
+    ),
+  );
+}
+
+class ShapeLabApp extends StatelessWidget {
+  const ShapeLabApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      home: const ShapeLabPage(),
+    );
+  }
+}
+
+class ShapeLabPage extends StatefulWidget {
+  const ShapeLabPage({super.key});
+
+  static const Color appBarBlue = Color(0xFF0D47A1);
+  static const Color stackArea = Color(0xFFE3F2FD);
+  static const Color lightBox = Color(0xFF263238);
+  static const Color redLight = Color(0xFFEF5350);
+  static const Color pole = Color(0xFF455A64);
+  static const Color buttonBlue = Color(0xFF1565C0);
+  static const Color buttonGreen = Color(0xFF2E7D32);
+
+  @override
+  State<ShapeLabPage> createState() => _ShapeLabPageState();
+}
+
+class _ShapeLabPageState extends State<ShapeLabPage> {
+  Color buttonColour = ShapeLabPage.buttonBlue;
+   String buttonText = 'Change Signal';
+
+   final List<Color> randomColours = const [
+    Color(0xFFD81B60),
+    Color(0xFF00897B),
+    Color(0xFF5E35B1),
+    Color(0xFFF9A825),
+  ];
+
+  final List<String> randomTexts = const [
+    'Stop Mode',
+    'Ready Mode',
+    'Go Mode',
+    'Signal Updated',
+  ];
+
+  void changeButtonColour() {
+    final random = Random();
+
+    setState(() {
+      buttonColour = randomColours[random.nextInt(randomColours.length)];
+      buttonText = randomTexts[random.nextInt(randomTexts.length)];
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: AppBar(
+        title: const Text('Traffic Light Lab'),
+        backgroundColor: ShapeLabPage.appBarBlue,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 16),
+            const Center(child: TrafficDrawing()),
+            const SizedBox(height: 18),
+            SizedBox(
+              width: 230,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: changeButtonColour,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttonColour,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  buttonText
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TrafficDrawing extends StatelessWidget {
+  const TrafficDrawing({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 320,
+      height: 360,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: ShapeLabPage.stackArea,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: const Color(0xFF42A5F5), width: 3),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 115,
+            top: 70,
+            child: Container(
+              width: 90,
+              height: 150,
+              decoration: BoxDecoration(
+                color: ShapeLabPage.lightBox,
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 140,
+            top: 95,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: ShapeLabPage.redLight,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            left: 145,
+            top: 220,
+            child: Container(
+              width: 30,
+              height: 95,
+              color: ShapeLabPage.pole,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
