@@ -1,0 +1,158 @@
+import 'dart:math';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+void main() {
+ runApp(
+   DevicePreview(
+     enabled: !kReleaseMode,
+     builder: (context) => const ShapeLabApp(),
+   ),
+ );
+}
+class ShapeLabApp extends StatelessWidget {
+ const ShapeLabApp({super.key});
+ @override
+ Widget build(BuildContext context) {
+   return MaterialApp(
+     debugShowCheckedModeBanner: false,
+     locale: DevicePreview.locale(context),
+     builder: DevicePreview.appBuilder,
+     home: const ShapeLabPage(),
+   );
+ }
+}
+// Q2 modifies Q1:
+// StatelessWidget changed to StatefulWidget
+class ShapeLabPage extends StatefulWidget {
+ const ShapeLabPage({super.key});
+ static const Color appBarBlue = Color(0xFF0D47A1);
+ static const Color stackBackground = Color(0xFFE0F7FA);
+ static const Color stackBorder = Color(0xFF26C6DA);
+ static const Color snowmanBody = Color(0xFFF5F5F5);
+ static const Color snowmanHead = Color(0xFFFFFFFF);
+ static const Color scarf = Color(0xFFEF6C00);
+ static const Color buttonDefault = Color(0xFF00695C);
+ @override
+ State<ShapeLabPage> createState() => _ShapeLabPageState();
+}
+class _ShapeLabPageState extends State<ShapeLabPage> {
+ final Random random = Random();
+ Color buttonColour = ShapeLabPage.buttonDefault;
+ String buttonText = 'Change Snowman';
+ final List<Color> randomButtonColours = const [
+   Color(0xFFC62828),
+   Color(0xFF283593),
+   Color(0xFF2E7D32),
+   Color(0xFFAD1457),
+ ];
+ final List<String> randomButtonTexts = const [
+   'Snowy!',
+   'Hello Winter',
+   'Magic Snow',
+   'Frost Mode',
+ ];
+ void changeButtonRandomly() {
+   setState(() {
+     buttonColour =
+         randomButtonColours[random.nextInt(randomButtonColours.length)];
+     buttonText =
+         randomButtonTexts[random.nextInt(randomButtonTexts.length)];
+   });
+ }
+ @override
+ Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(
+       title: const Text('Snowman Lab'),
+       backgroundColor: ShapeLabPage.appBarBlue,
+       foregroundColor: Colors.white,
+       centerTitle: true,
+     ),
+     body: Center(
+       child: Padding(
+         padding: const EdgeInsets.all(30),
+         child: Column(
+           mainAxisSize: MainAxisSize.min,
+           children: [
+             // Same drawing from Q1
+             SizedBox(
+               width: 320,
+               height: 360,
+               child: Stack(
+                 children: [
+                   Container(
+                     width: 320,
+                     height: 360,
+                     decoration: BoxDecoration(
+                       color: ShapeLabPage.stackBackground,
+                       border: Border.all(
+                         color: ShapeLabPage.stackBorder,
+                         width: 3,
+                       ),
+                       borderRadius: BorderRadius.circular(18),
+                     ),
+                   ),
+                   // Body
+                   Positioned(
+                     left: 110,
+                     top: 155,
+                     child: Container(
+                       width: 100,
+                       height: 100,
+                       decoration: const BoxDecoration(
+                         color: ShapeLabPage.snowmanBody,
+                         shape: BoxShape.circle,
+                       ),
+                     ),
+                   ),
+                   // Head
+                   Positioned(
+                     left: 130,
+                     top: 90,
+                     child: Container(
+                       width: 60,
+                       height: 60,
+                       decoration: const BoxDecoration(
+                         color: ShapeLabPage.snowmanHead,
+                         shape: BoxShape.circle,
+                       ),
+                     ),
+                   ),
+                   // Scarf
+                   Positioned(
+                     left: 115,
+                     top: 145,
+                     child: Container(
+                       width: 90,
+                       height: 18,
+                       color: ShapeLabPage.scarf,
+                     ),
+                   ),
+                 ],
+               ),
+             ),
+             const SizedBox(height: 18),
+             // Only this button changes in Q2
+             SizedBox(
+               width: 230,
+               height: 48,
+               child: ElevatedButton(
+                 onPressed: changeButtonRandomly,
+                 style: ElevatedButton.styleFrom(
+                   backgroundColor: buttonColour,
+                   foregroundColor: Colors.white,
+                   shape: RoundedRectangleBorder(
+                     borderRadius: BorderRadius.circular(14),
+                   ),
+                 ),
+                 child: Text(buttonText),
+               ),
+             ),
+           ],
+         ),
+       ),
+     ),
+   );
+ }
+}
